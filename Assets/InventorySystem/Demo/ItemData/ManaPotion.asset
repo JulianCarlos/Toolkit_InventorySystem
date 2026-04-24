@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43238de89bf47054fa9a0eba4f7dc233, type: 3}
+  m_Name: ManaPotion
+  m_EditorClassIdentifier: Assembly-CSharp::SO_Item
+  Guid: c1efc90f4ed8498997441ed508a6af31
+  ItemName: Mana Potion
+  Description: Restores a small amount of MP.
+  Icon: {fileID: 7433338533053954386, guid: 8ceb0e11bfef5d44c944e60156ea6077, type: 3}
+  StackSize: 10
+  ItemType: 3
+  DefaultRarity: 1

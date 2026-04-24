@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="Root" style="flex-grow: 1; flex-direction: column;">
+
+        <!-- Inventory Panel (middle area, shown when inventory is open) -->
+        <ui:VisualElement name="InventoryPanel" style="flex-grow: 1; flex-direction: row; justify-content: center; align-items: center; padding-top: 50px; padding-bottom: 100px;">
+            <ui:VisualElement name="PlayerInventoryContainer" style="margin-right: 10px;" />
+            <ui:VisualElement name="PlayerEquipmentContainer" style="margin-right: 10px;" />
+            <ui:VisualElement name="TargetInventoryContainer" />
+        </ui:VisualElement>
+
+        <!-- Hotbar (bottom center) -->
+        <ui:VisualElement name="HotbarPanel" style="flex-shrink: 0; align-items: center; justify-content: center; padding-bottom: 20px;">
+            <ui:VisualElement name="HotbarContainer" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

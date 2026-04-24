@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43238de89bf47054fa9a0eba4f7dc233, type: 3}
+  m_Name: AncientRelic
+  m_EditorClassIdentifier: Assembly-CSharp::SO_Item
+  Guid: 52bda8e6c0ba4e14acf4d27f0e5ed6d5
+  ItemName: Ancient Relic
+  Description: A mysterious artifact.
+  Icon: {fileID: 2800000, guid: 727a75301c3d24613a3ebcec4a24c2c8, type: 3}
+  StackSize: 1
+  ItemType: 4
+  DefaultRarity: 4
