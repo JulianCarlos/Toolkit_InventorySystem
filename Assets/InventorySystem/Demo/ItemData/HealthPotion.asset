@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43238de89bf47054fa9a0eba4f7dc233, type: 3}
+  m_Name: HealthPotion
+  m_EditorClassIdentifier: Assembly-CSharp::SO_Item
+  Guid: 6159b435b5d7450280780285c608243f
+  ItemName: Health Potion
+  Description: Restores a small amount of HP.
+  Icon: {fileID: -1087164816274819069, guid: 8ceb0e11bfef5d44c944e60156ea6077, type: 3}
+  StackSize: 10
+  ItemType: 3
+  DefaultRarity: 0
