@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &58215894
+--- !u!1 &317631243
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,47 +127,108 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 58215896}
-  - component: {fileID: 58215895}
+  - component: {fileID: 317631247}
+  - component: {fileID: 317631246}
+  - component: {fileID: 317631245}
+  - component: {fileID: 317631244}
   m_Layer: 0
-  m_Name: InventoryA
+  m_Name: '[InventoryDemo]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &58215895
+--- !u!114 &317631244
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 58215894}
+  m_GameObject: {fileID: 317631243}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b99ba05b58b3504fbbf24ea5735ed65, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ff815e5ff4700f46912282f5bcca1cd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  uniqueId: d1c12b13-1b56-4719-9a9e-dca646651604
-  inventoryName: Backpack
-  layoutTemplate: {fileID: 9197481963319205126, guid: 0dc545a1a2f47824d996dfd8126b7c30, type: 3}
-  slotTemplate: {fileID: 9197481963319205126, guid: b9a05e3f88a36794f9c65cb92f4a2eac, type: 3}
-  slotCount: 24
-  filters: []
---- !u!4 &58215896
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryDemo
+  uiDocument: {fileID: 317631246}
+  inventoryA: {fileID: 1212677769}
+  inventoryB: {fileID: 1099800757}
+  itemPool:
+  - {fileID: 11400000, guid: 69da42cae2e46ed48b4624653aa6dc78, type: 2}
+  - {fileID: 11400000, guid: 5a4a9488f5fe4e94a827b3181cab1cda, type: 2}
+  - {fileID: 11400000, guid: 714f0fcd544118e4688fc4ac9a370a9f, type: 2}
+  - {fileID: 11400000, guid: ba3093344aa433f499477e2d54bd5850, type: 2}
+  - {fileID: 11400000, guid: 69abc4436d75474448ca2bdf65be47c0, type: 2}
+  - {fileID: 11400000, guid: 691f30e05b9f81f449c2060eea8938ca, type: 2}
+  - {fileID: 11400000, guid: ca57dadc3de77f446821c9191d0079cd, type: 2}
+  - {fileID: 11400000, guid: 02a6070008f9ac54f96b0340ff090da6, type: 2}
+  - {fileID: 11400000, guid: 7c211468f8ab3f24e976bbdb29e0357e, type: 2}
+  - {fileID: 11400000, guid: 5d0e867cd8f69104d89c148b3b515a38, type: 2}
+  - {fileID: 11400000, guid: 5d6cf93b98351b84ca82141521dd5bb6, type: 2}
+  - {fileID: 11400000, guid: 96db80446a082a541bac105a12e57877, type: 2}
+  - {fileID: 11400000, guid: f308160016d28e0428cdd133a5ee988d, type: 2}
+  - {fileID: 11400000, guid: 2f4052dae9aff7b4091faee1c007a723, type: 2}
+  - {fileID: 11400000, guid: 635e78b297d4d8a4e98eb27d65398822, type: 2}
+  - {fileID: 11400000, guid: 6cac2ab52b6175148914f8bcfe0cc0c6, type: 2}
+  - {fileID: 11400000, guid: 261bc3a3b5f04e943820ea2d2f1e60bc, type: 2}
+  - {fileID: 11400000, guid: d72eca2c7fcdf9e47ba75fb337ca2f1b, type: 2}
+  - {fileID: 11400000, guid: 831a62ab447831948aeb4d3d0bd77ba1, type: 2}
+  - {fileID: 11400000, guid: 0f696bc0c66a4a4499218fcc60ac38aa, type: 2}
+  rarityCatalog: {fileID: 0}
+  itemsToGenerate: 16
+--- !u!114 &317631245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 317631243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff8f5e0462787547ac9d66dd575b6b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryUIManager
+  uiDocument: {fileID: 317631246}
+  tooltipDelay: 1
+--- !u!114 &317631246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 317631243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 86e11ea2fc174ab46a6aa58d7f4c48ea, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &317631247
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 58215894}
+  m_GameObject: {fileID: 317631243}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 981202851}
+  m_Children:
+  - {fileID: 1212677770}
+  - {fileID: 1099800758}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &330585543
 GameObject:
@@ -306,56 +367,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!1 &369168370
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 369168372}
-  - component: {fileID: 369168371}
-  m_Layer: 0
-  m_Name: InventoryB
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &369168371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369168370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b99ba05b58b3504fbbf24ea5735ed65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  uniqueId: 7eb34151-a0ff-46a7-a113-2bcd97000cb3
-  inventoryName: Chest
-  layoutTemplate: {fileID: 9197481963319205126, guid: 0dc545a1a2f47824d996dfd8126b7c30, type: 3}
-  slotTemplate: {fileID: 9197481963319205126, guid: b9a05e3f88a36794f9c65cb92f4a2eac, type: 3}
-  slotCount: 24
-  filters: []
---- !u!4 &369168372
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369168370}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 981202851}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,7 +543,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &981202847
+--- !u!1 &1099800756
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -540,107 +551,105 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 981202851}
-  - component: {fileID: 981202850}
-  - component: {fileID: 981202849}
-  - component: {fileID: 981202848}
+  - component: {fileID: 1099800758}
+  - component: {fileID: 1099800757}
   m_Layer: 0
-  m_Name: '[InventoryDemo]'
+  m_Name: InventoryB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &981202848
+--- !u!114 &1099800757
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981202847}
+  m_GameObject: {fileID: 1099800756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ff815e5ff4700f46912282f5bcca1cd, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b99ba05b58b3504fbbf24ea5735ed65, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InventoryDemo
-  uiDocument: {fileID: 981202850}
-  inventoryA: {fileID: 58215895}
-  inventoryB: {fileID: 369168371}
-  itemPool:
-  - {fileID: 11400000, guid: 69da42cae2e46ed48b4624653aa6dc78, type: 2}
-  - {fileID: 11400000, guid: 5a4a9488f5fe4e94a827b3181cab1cda, type: 2}
-  - {fileID: 11400000, guid: 714f0fcd544118e4688fc4ac9a370a9f, type: 2}
-  - {fileID: 11400000, guid: ba3093344aa433f499477e2d54bd5850, type: 2}
-  - {fileID: 11400000, guid: 69abc4436d75474448ca2bdf65be47c0, type: 2}
-  - {fileID: 11400000, guid: 691f30e05b9f81f449c2060eea8938ca, type: 2}
-  - {fileID: 11400000, guid: ca57dadc3de77f446821c9191d0079cd, type: 2}
-  - {fileID: 11400000, guid: 02a6070008f9ac54f96b0340ff090da6, type: 2}
-  - {fileID: 11400000, guid: 7c211468f8ab3f24e976bbdb29e0357e, type: 2}
-  - {fileID: 11400000, guid: 5d0e867cd8f69104d89c148b3b515a38, type: 2}
-  - {fileID: 11400000, guid: 5d6cf93b98351b84ca82141521dd5bb6, type: 2}
-  - {fileID: 11400000, guid: 96db80446a082a541bac105a12e57877, type: 2}
-  - {fileID: 11400000, guid: f308160016d28e0428cdd133a5ee988d, type: 2}
-  - {fileID: 11400000, guid: 2f4052dae9aff7b4091faee1c007a723, type: 2}
-  - {fileID: 11400000, guid: 635e78b297d4d8a4e98eb27d65398822, type: 2}
-  - {fileID: 11400000, guid: 6cac2ab52b6175148914f8bcfe0cc0c6, type: 2}
-  - {fileID: 11400000, guid: 261bc3a3b5f04e943820ea2d2f1e60bc, type: 2}
-  - {fileID: 11400000, guid: d72eca2c7fcdf9e47ba75fb337ca2f1b, type: 2}
-  - {fileID: 11400000, guid: 831a62ab447831948aeb4d3d0bd77ba1, type: 2}
-  - {fileID: 11400000, guid: 0f696bc0c66a4a4499218fcc60ac38aa, type: 2}
-  itemsToGenerate: 16
---- !u!114 &981202849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981202847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fff8f5e0462787547ac9d66dd575b6b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InventoryUIManager
-  uiDocument: {fileID: 981202850}
-  tooltipDelay: 1
---- !u!114 &981202850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981202847}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: 86e11ea2fc174ab46a6aa58d7f4c48ea, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 34cba58faf8852f47bea76afaaf126fb, type: 3}
-  m_SortingOrder: 0
-  m_Position: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
-  m_PivotReferenceSize: 0
-  m_Pivot: 0
-  m_WorldSpaceCollider: {fileID: 0}
---- !u!4 &981202851
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  uniqueId: ff98fcd5-b2c2-410a-bee1-cdf1c3f57f80
+  inventoryName: Chest
+  layoutTemplate: {fileID: 9197481963319205126, guid: 0dc545a1a2f47824d996dfd8126b7c30, type: 3}
+  slotTemplate: {fileID: 9197481963319205126, guid: b9a05e3f88a36794f9c65cb92f4a2eac, type: 3}
+  slotCount: 24
+  filters: []
+  rarityCatalog: {fileID: 0}
+  primarySort: 1
+  secondarySort: 0
+  sortRarityDescending: 1
+--- !u!4 &1099800758
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 981202847}
+  m_GameObject: {fileID: 1099800756}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 58215896}
-  - {fileID: 369168372}
-  m_Father: {fileID: 0}
+  m_Children: []
+  m_Father: {fileID: 317631247}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1212677768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1212677770}
+  - component: {fileID: 1212677769}
+  m_Layer: 0
+  m_Name: InventoryA
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1212677769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212677768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b99ba05b58b3504fbbf24ea5735ed65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  uniqueId: 1a60e926-91e4-42e7-9b1c-9c5489f7863f
+  inventoryName: Backpack
+  layoutTemplate: {fileID: 9197481963319205126, guid: 0dc545a1a2f47824d996dfd8126b7c30, type: 3}
+  slotTemplate: {fileID: 9197481963319205126, guid: b9a05e3f88a36794f9c65cb92f4a2eac, type: 3}
+  slotCount: 24
+  filters: []
+  rarityCatalog: {fileID: 0}
+  primarySort: 1
+  secondarySort: 0
+  sortRarityDescending: 1
+--- !u!4 &1212677770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212677768}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 317631247}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -649,4 +658,4 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 981202851}
+  - {fileID: 317631247}

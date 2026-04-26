@@ -28,7 +28,10 @@ public abstract class SlotManagerBase<TSlot> : MonoBehaviour where TSlot : class
 
     protected virtual void Update()
     {
-        if (panel == null || Mouse.current == null) return;
+        if (panel == null || Mouse.current == null)
+        {
+            return;
+        }
 
         CalculateMousePosition();
 
@@ -85,7 +88,10 @@ public abstract class SlotManagerBase<TSlot> : MonoBehaviour where TSlot : class
 
     private void HandleHoverTooltip(TSlot slotUnderMouse)
     {
-        if (isDragging) return;
+        if (isDragging)
+        {
+            return;
+        }
 
         if (slotUnderMouse != null)
         {

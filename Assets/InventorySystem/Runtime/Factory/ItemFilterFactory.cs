@@ -25,9 +25,10 @@ public static class ItemFilterFactory
         };
     }
 
-    public static Predicate<Item> ByRarity(RarityType minRarity)
+    public static Predicate<Item> ByRarity(string minRarity, SO_RarityCatalog rarityCatalog = null)
     {
-        return item => item != null && item.Rarity >= minRarity;
+        int requiredSortOrder = GetRaritySortOrder(minRarity, rarityCatalog);
+        return item => item != null && GetRaritySortOrder(item.Rarity, rarityCatalog) >= requiredSortOrder;
     }
 
     public static Predicate<Item> Combine(params Predicate<Item>[] predicates)
@@ -44,5 +45,15 @@ public static class ItemFilterFactory
 
             return true;
         };
+    }
+
+    private static int GetRaritySortOrder(string rarityName, SO_RarityCatalog rarityCatalog)
+    {
+        if (rarityCatalog != null)
+        {
+            return rarityCatalog.GetSortOrder(rarityName);
+        }
+
+        return RarityDefinition.GetFallbackSortOrder(rarityName);
     }
 }

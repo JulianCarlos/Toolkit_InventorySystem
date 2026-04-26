@@ -25,6 +25,6 @@ public class DemoPlayerInventory : Inventory
     public void DropAll()
     {
         Debug.Log("[DemoPlayerInventory] Dropping all items!");
-        ClearAllSlots();
+        Clear();
     }
 }

@@ -2,14 +2,37 @@ using UnityEngine;
 
 public static class ItemFactory
 {
+    /// <summary>
+    /// Creates a runtime item using the default rarity configured on the item asset.
+    /// </summary>
     public static Item CreateItem(SO_Item itemData)
     {
+        if (itemData == null)
+        {
+            return null;
+        }
+
         return CreateItem(itemData, itemData.DefaultRarity);
     }
 
-    public static Item CreateItem(SO_Item itemData, RarityType rarity)
+    /// <summary>
+    /// Creates a runtime item with a caller-supplied rarity name.
+    /// </summary>
+    public static Item CreateItem(SO_Item itemData, string rarity)
     {
-        string iconPath = itemData.Icon != null ? itemData.Icon.name : "";
+        if (itemData == null)
+        {
+            return null;
+        }
+
+        string iconPath = string.Empty;
+
+        if (itemData.Icon != null)
+        {
+            iconPath = itemData.Icon.name;
+        }
+
+        string rarityName = RarityDefinition.NormalizeName(rarity);
 
         Item item;
 
@@ -21,7 +44,7 @@ public static class ItemFactory
                 itemData.Description,
                 iconPath,
                 itemData.StackSize,
-                rarity,
+                rarityName,
                 equipmentData.EquipmentType
             );
         }
@@ -33,21 +56,22 @@ public static class ItemFactory
                 itemData.Description,
                 iconPath,
                 itemData.StackSize,
-                rarity,
+                rarityName,
                 itemData.ItemType
             );
         }
 
-        // Inject the direct texture reference so it works without Resources/Images/ folder
         if (itemData.Icon != null)
         {
             item.SetIcon(itemData.Icon);
         }
 
+        item.SetRarityBackground(itemData.GetRarityBackground(rarityName));
+
         return item;
     }
 
-    public static Item CreateItem(string guid, string name, string description, string iconPath, int stackSize, RarityType rarity, ItemType type)
+    public static Item CreateItem(string guid, string name, string description, string iconPath, int stackSize, string rarity, ItemType type)
     {
         return new Item(guid, name, description, iconPath, stackSize, rarity, type);
     }

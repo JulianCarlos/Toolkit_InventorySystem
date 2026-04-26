@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -78,6 +77,14 @@ public class DemoDropInventory : Inventory
 
     public bool IsCompletelyEmpty()
     {
-        return ItemSlots.All(slot => slot.IsEmpty);
+        foreach (InventorySlot slot in ItemSlots)
+        {
+            if (!slot.IsEmpty)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -13,6 +13,7 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
 
     [Header("Random Item Generation")]
     [SerializeField] private SO_Item[] itemPool;
+    [SerializeField] private SO_RarityCatalog rarityCatalog;
     [SerializeField] private int itemsToGenerate = 12;
 
     private VisualElement root;
@@ -21,7 +22,15 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
     private VisualElement statusBar;
     private Label statusLabel;
 
-    private static readonly RarityType[] CachedRarities = (RarityType[])Enum.GetValues(typeof(RarityType));
+    private static readonly string[] DefaultRarityNames =
+    {
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Very Rare",
+        "Legendary",
+        "Unique"
+    };
 
     protected override string SlotCssClass => "inventory-slot";
 
@@ -217,12 +226,16 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
         for (int i = 0; i < itemsToGenerate; i++)
         {
             SO_Item so = itemPool[UnityEngine.Random.Range(0, itemPool.Length)];
-            if (so == null) continue;
+
+            if (so == null)
+            {
+                continue;
+            }
 
             Item item = ItemFactory.CreateItem(so);
             int amount = UnityEngine.Random.Range(1, item.StackSize + 1);
 
-            Inventory target = UnityEngine.Random.value > 0.5f ? inventoryA : inventoryB;
+            Inventory target = GetRandomInventory();
             target.TryAddItem(item, amount);
         }
     }
@@ -241,19 +254,41 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
             ("relic",  "Ancient Relic",  "Mysterious artifact.", 1, ItemType.Quest),
         };
 
-        RarityType[] rarities = CachedRarities;
-
         for (int i = 0; i < itemsToGenerate; i++)
         {
             var d = defs[UnityEngine.Random.Range(0, defs.Length)];
-            var rarity = rarities[UnityEngine.Random.Range(0, rarities.Length)];
+            string rarity = GetRandomRarityName();
 
             Item item = new Item(d.guid, d.name, d.desc, "", d.stack, rarity, d.type);
             int amount = UnityEngine.Random.Range(1, item.StackSize + 1);
 
-            Inventory target = UnityEngine.Random.value > 0.5f ? inventoryA : inventoryB;
+            Inventory target = GetRandomInventory();
             target.TryAddItem(item, amount);
         }
+    }
+
+    private string GetRandomRarityName()
+    {
+        SO_RarityCatalog catalog = rarityCatalog;
+
+        if (catalog == null && inventoryA != null)
+        {
+            catalog = inventoryA.RarityCatalog;
+        }
+
+        string[] rarityNames = DefaultRarityNames;
+
+        if (catalog != null)
+        {
+            rarityNames = catalog.GetRarityNames();
+        }
+
+        if (rarityNames == null || rarityNames.Length == 0)
+        {
+            return RarityDefinition.DefaultName;
+        }
+
+        return rarityNames[UnityEngine.Random.Range(0, rarityNames.Length)];
     }
 
     #endregion
@@ -300,7 +335,10 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
 
     protected override void OnExtraButtons(InventorySlot slot)
     {
-        if (slot.Item == null) return;
+        if (slot.Item == null)
+        {
+            return;
+        }
 
         // Right-click: transfer to the other inventory
         if (Mouse.current.rightButton.wasPressedThisFrame)
@@ -308,7 +346,7 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
             Inventory other = GetOtherInventory(slot.Parent);
             if (other != null)
             {
-                Inventory.TransferItem(slot, other);
+                Inventory.TransferSlot(slot, other);
                 UpdateStatus();
             }
         }
@@ -333,7 +371,7 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
 
         if (to != null)
         {
-            SwapOrStack(from, to);
+            Inventory.MoveOrSwapSlots(from, to);
             UpdateStatus();
         }
     }
@@ -344,91 +382,55 @@ public class InventoryDemo : SlotManagerBase<InventorySlot>
 
     private Inventory GetOtherInventory(Inventory origin)
     {
-        if (origin == inventoryA) return inventoryB;
-        if (origin == inventoryB) return inventoryA;
+        if (origin == inventoryA)
+        {
+            return inventoryB;
+        }
+
+        if (origin == inventoryB)
+        {
+            return inventoryA;
+        }
+
         return null;
     }
 
-    private void SwapOrStack(InventorySlot source, InventorySlot dest)
+    private Inventory GetRandomInventory()
     {
-        // Dropped on itself — do nothing
-        if (source == dest) return;
-
-        Item srcItem = source.Item;
-        int srcAmt = source.Amount;
-        Item dstItem = dest.Item;
-        int dstAmt = dest.Amount;
-
-        // Stack
-        if (!dest.IsEmpty && !source.IsEmpty
-            && dest.CanStack(srcItem) && dest.IsItemAllowed(srcItem))
+        if (UnityEngine.Random.value > 0.5f)
         {
-            int space = dstItem.StackSize - dstAmt;
-            int move = Mathf.Min(space, srcAmt);
-            dest.UpdateSlot(dstItem, dstAmt + move);
-            source.UpdateSlot(srcItem, srcAmt - move);
+            return inventoryA;
         }
-        // Swap
-        else if (dest.IsEmpty ? dest.IsItemAllowed(srcItem)
-            : (dest.IsItemAllowed(srcItem) && source.IsItemAllowed(dstItem)))
-        {
-            source.UpdateSlot(dstItem, dstAmt);
-            dest.UpdateSlot(srcItem, srcAmt);
-        }
+
+        return inventoryB;
     }
 
     private void TransferAll(Inventory from, Inventory to)
     {
-        foreach (var slot in from.ItemSlots)
-        {
-            if (!slot.IsEmpty && slot.Item != null)
-            {
-                int remaining = to.TryAddItem(slot.Item, slot.Amount);
-                slot.UpdateSlot(remaining);
-            }
-        }
+        from.TransferAllTo(to);
     }
 
     private void ClearBothInventories()
     {
-        foreach (var slot in inventoryA.ItemSlots)
-            slot.UpdateSlot(null, 0);
-        foreach (var slot in inventoryB.ItemSlots)
-            slot.UpdateSlot(null, 0);
-    }
-
-    private int CountItems(Inventory inv)
-    {
-        int count = 0;
-        foreach (var slot in inv.ItemSlots)
-        {
-            if (!slot.IsEmpty) count += slot.Amount;
-        }
-        return count;
-    }
-
-    private int CountUsedSlots(Inventory inv)
-    {
-        int count = 0;
-        foreach (var slot in inv.ItemSlots)
-        {
-            if (!slot.IsEmpty) count++;
-        }
-        return count;
+        inventoryA.Clear();
+        inventoryB.Clear();
     }
 
     private void UpdateStatus()
     {
-        if (statusLabel == null) return;
+        if (statusLabel == null)
+        {
+            return;
+        }
 
         string nameA = inventoryA.InventoryName;
         string nameB = inventoryB.InventoryName;
-        int usedA = CountUsedSlots(inventoryA);
-        int totalA = inventoryA.ItemSlots.Length;
-        int itemsA = CountItems(inventoryA);
-        int usedB = CountUsedSlots(inventoryB);
-        int totalB = inventoryB.ItemSlots.Length;
-        int itemsB = CountItems(inventoryB);
+        int usedA = inventoryA.UsedSlotCount;
+        int totalA = inventoryA.SlotCount;
+        int itemsA = inventoryA.TotalItemCount;
+        int usedB = inventoryB.UsedSlotCount;
+        int totalB = inventoryB.SlotCount;
+        int itemsB = inventoryB.TotalItemCount;
 
         statusLabel.text = $"{nameA}: {usedA}/{totalA} slots, {itemsA} items   |   {nameB}: {usedB}/{totalB} slots, {itemsB} items";
     }

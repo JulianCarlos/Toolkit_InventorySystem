@@ -60,11 +60,22 @@ public class InventoryUIManager : MonoBehaviour
 
     public void EnsureSetup()
     {
-        if (isSetUp) return;
-        if (uiDocument == null) return;
+        if (isSetUp)
+        {
+            return;
+        }
+
+        if (uiDocument == null)
+        {
+            return;
+        }
 
         root = uiDocument.rootVisualElement;
-        if (root == null) return;
+
+        if (root == null)
+        {
+            return;
+        }
 
         panel = root.panel;
 
@@ -322,14 +333,21 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (tooltipContainer != null)
         {
-            tooltipContainer.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            tooltipContainer.style.display = GetDisplayStyle(show);
         }
     }
 
     private void AnimateTooltipRarity()
     {
-        if (!isTooltipVisible || tooltipBackground == null) return;
-        if (tooltipBackground.style.backgroundImage.value.texture == null) return;
+        if (!isTooltipVisible || tooltipBackground == null)
+        {
+            return;
+        }
+
+        if (tooltipBackground.style.backgroundImage.value.texture == null)
+        {
+            return;
+        }
 
         tooltipRarityOffset += Time.deltaTime * 10f;
         tooltipBackground.style.backgroundPositionY = new StyleBackgroundPosition(
@@ -371,11 +389,11 @@ public class InventoryUIManager : MonoBehaviour
             return;
         }
 
-        float w = dragElement.resolvedStyle.width > 0 ? dragElement.resolvedStyle.width : 48f;
-        float h = dragElement.resolvedStyle.height > 0 ? dragElement.resolvedStyle.height : 48f;
+        float width = GetResolvedSizeOrDefault(dragElement.resolvedStyle.width, 48f);
+        float height = GetResolvedSizeOrDefault(dragElement.resolvedStyle.height, 48f);
 
-        dragElement.style.left = mousePosPanel.x - w * 0.5f;
-        dragElement.style.top = mousePosPanel.y - h * 0.5f;
+        dragElement.style.left = mousePosPanel.x - width * 0.5f;
+        dragElement.style.top = mousePosPanel.y - height * 0.5f;
     }
 
     public void HideDrag()
@@ -394,8 +412,28 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (dragElement != null)
         {
-            dragElement.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            dragElement.style.display = GetDisplayStyle(show);
         }
+    }
+
+    private DisplayStyle GetDisplayStyle(bool show)
+    {
+        if (show)
+        {
+            return DisplayStyle.Flex;
+        }
+
+        return DisplayStyle.None;
+    }
+
+    private float GetResolvedSizeOrDefault(float resolvedSize, float defaultSize)
+    {
+        if (resolvedSize > 0f)
+        {
+            return resolvedSize;
+        }
+
+        return defaultSize;
     }
 
     #endregion
@@ -409,14 +447,20 @@ public class InventoryUIManager : MonoBehaviour
         if (tooltipContainer != null)
         {
             if (tooltipContainer.parent == null)
+            {
                 root.Add(tooltipContainer);
+            }
+
             tooltipContainer.BringToFront();
         }
 
         if (dragElement != null)
         {
             if (dragElement.parent == null)
+            {
                 root.Add(dragElement);
+            }
+
             dragElement.BringToFront();
         }
     }

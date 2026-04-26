@@ -18,4 +18,5 @@ MonoBehaviour:
   Icon: {fileID: -4521532143779581420, guid: 8ceb0e11bfef5d44c944e60156ea6077, type: 3}
   StackSize: 20
   ItemType: 1
-  DefaultRarity: 1
+  rarityCatalog: {fileID: 11400000, guid: f4c537b325304f9b9de0d49d383b8e40, type: 2}
+  defaultRarityName: Uncommon

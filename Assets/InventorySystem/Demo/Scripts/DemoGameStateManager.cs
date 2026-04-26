@@ -27,6 +27,6 @@ public class DemoGameStateManager : MonoBehaviour
     public void SetState(DemoGameState newState)
     {
         CurrentState = newState;
-        Cursor.lockState = newState == DemoGameState.Default ? CursorLockMode.None : CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.None;
     }
 }

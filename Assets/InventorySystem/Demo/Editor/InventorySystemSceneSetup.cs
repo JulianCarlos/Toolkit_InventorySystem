@@ -9,7 +9,6 @@ public static class InventorySystemSceneSetup
     private const string SlotUxmlPath = "Assets/InventorySystem/UI/InventorySlot.uxml";
     private const string DefaultInvUxmlPath = "Assets/InventorySystem/UI/DefaultInventory.uxml";
     private const string HudUxmlPath = "Assets/InventorySystem/Demo/UI/DemoHUD.uxml";
-    private const string InteractiveUxmlPath = "Assets/InventorySystem/Demo/UI/DemoInteractive.uxml";
     private const string PlayerInvUxmlPath = "Assets/InventorySystem/Demo/UI/DemoPlayerInventory.uxml";
     private const string EquipmentInvUxmlPath = "Assets/InventorySystem/Demo/UI/DemoEquipmentInventory.uxml";
     private const string HotbarInvUxmlPath = "Assets/InventorySystem/Demo/UI/DemoHotbarInventory.uxml";
@@ -24,12 +23,11 @@ public static class InventorySystemSceneSetup
     {
         var slotUxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(SlotUxmlPath);
         var defaultInvUxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(DefaultInvUxmlPath);
-        var interactiveUxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(InteractiveUxmlPath);
 
-        if (slotUxml == null || defaultInvUxml == null || interactiveUxml == null)
+        if (slotUxml == null || defaultInvUxml == null)
         {
             EditorUtility.DisplayDialog("Missing Assets",
-                $"Cannot find required UXML:\n  - {SlotUxmlPath}\n  - {DefaultInvUxmlPath}\n  - {InteractiveUxmlPath}",
+                $"Cannot find required UXML:\n  - {SlotUxmlPath}\n  - {DefaultInvUxmlPath}",
                 "OK");
             return;
         }
@@ -49,7 +47,6 @@ public static class InventorySystemSceneSetup
 
         // UIDocument
         var uiDoc = root.AddComponent<UIDocument>();
-        uiDoc.visualTreeAsset = interactiveUxml;
         uiDoc.sortingOrder = 0;
         uiDoc.panelSettings = FindOrCreatePanelSettings();
 
@@ -181,7 +178,6 @@ public static class InventorySystemSceneSetup
         Set(invManager, "playerInventory", playerInv);
         Set(invManager, "equipmentInventory", equipInv);
         Set(invManager, "hotbarInventory", hotbarInv);
-        WireDemoItemArray(invManager, "demoItems");
 
         Undo.RegisterCreatedObjectUndo(root, "Setup Full HUD Demo");
         EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
@@ -202,12 +198,20 @@ public static class InventorySystemSceneSetup
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
             var ps = AssetDatabase.LoadAssetAtPath<PanelSettings>(path);
-            if (ps != null) return ps;
+
+            if (ps != null)
+            {
+                return ps;
+            }
         }
 
         const string panelPath = "Assets/InventorySystem/Demo/DemoPanelSettings.asset";
         var existing = AssetDatabase.LoadAssetAtPath<PanelSettings>(panelPath);
-        if (existing != null) return existing;
+
+        if (existing != null)
+        {
+            return existing;
+        }
 
         if (!AssetDatabase.IsValidFolder("Assets/InventorySystem/Demo"))
         {
@@ -222,34 +226,20 @@ public static class InventorySystemSceneSetup
 
     private static void WireDemoItemPool(InventoryDemo demo)
     {
-        if (!AssetDatabase.IsValidFolder(ItemDataFolder)) return;
+        if (!AssetDatabase.IsValidFolder(ItemDataFolder))
+        {
+            return;
+        }
 
         string[] guids = AssetDatabase.FindAssets("t:SO_Item", new[] { ItemDataFolder });
-        if (guids.Length == 0) return;
+
+        if (guids.Length == 0)
+        {
+            return;
+        }
 
         var so = new SerializedObject(demo);
         var prop = so.FindProperty("itemPool");
-        if (prop != null && prop.isArray)
-        {
-            prop.arraySize = guids.Length;
-            for (int i = 0; i < guids.Length; i++)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                prop.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<SO_Item>(path);
-            }
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
-    }
-
-    private static void WireDemoItemArray(Object target, string fieldName)
-    {
-        if (!AssetDatabase.IsValidFolder(ItemDataFolder)) return;
-
-        string[] guids = AssetDatabase.FindAssets("t:SO_Item", new[] { ItemDataFolder });
-        if (guids.Length == 0) return;
-
-        var so = new SerializedObject(target);
-        var prop = so.FindProperty(fieldName);
         if (prop != null && prop.isArray)
         {
             prop.arraySize = guids.Length;

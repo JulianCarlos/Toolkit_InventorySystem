@@ -21,8 +21,6 @@ public class DemoUIManager : MonoBehaviour
     private VisualElement hotbarUI;
     private VisualElement targetInventoryUI;
 
-    private bool isInitialized;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,43 +30,32 @@ public class DemoUIManager : MonoBehaviour
         }
 
         Instance = this;
-    }
-
-    private void EnsureInitialized()
-    {
-        if (isInitialized) return;
-        if (playerHUD == null) return;
 
         rootElement = playerHUD.rootVisualElement;
-        if (rootElement == null) return;
 
         playerInventoryContainer = rootElement.Q<VisualElement>("PlayerInventoryContainer");
         playerEquipmentContainer = rootElement.Q<VisualElement>("PlayerEquipmentContainer");
         hotbarContainer = rootElement.Q<VisualElement>("HotbarContainer");
         targetInventoryContainer = rootElement.Q<VisualElement>("TargetInventoryContainer");
-
-        isInitialized = playerInventoryContainer != null;
     }
 
     public void SetupPlayerInventories(Inventory playerInventory, Inventory equipmentInventory, Inventory hotbarInventory)
     {
-        EnsureInitialized();
-
-        if (playerInventoryUI == null && playerInventory != null && playerInventoryContainer != null)
+        if (playerInventoryUI == null && playerInventory != null)
         {
             playerInventoryUI = playerInventory.GetInventoryUI();
             playerInventoryContainer.Clear();
             playerInventoryContainer.Add(playerInventoryUI);
         }
 
-        if (playerEquipmentUI == null && equipmentInventory != null && playerEquipmentContainer != null)
+        if (playerEquipmentUI == null && equipmentInventory != null)
         {
             playerEquipmentUI = equipmentInventory.GetInventoryUI();
             playerEquipmentContainer.Clear();
             playerEquipmentContainer.Add(playerEquipmentUI);
         }
 
-        if (hotbarUI == null && hotbarInventory != null && hotbarContainer != null)
+        if (hotbarUI == null && hotbarInventory != null)
         {
             hotbarUI = hotbarInventory.GetInventoryUI();
             hotbarContainer.Clear();
@@ -78,7 +65,6 @@ public class DemoUIManager : MonoBehaviour
 
     public void ShowPlayerInventory()
     {
-        EnsureInitialized();
         ShowElement(playerInventoryContainer, true);
         ShowElement(playerEquipmentContainer, true);
         ShowElement(targetInventoryContainer, false);
@@ -86,10 +72,10 @@ public class DemoUIManager : MonoBehaviour
 
     public void ShowTargetInventory(Inventory target)
     {
-        if (target == null) return;
-
-        EnsureInitialized();
-        if (targetInventoryContainer == null) return;
+        if (target == null)
+        {
+            return;
+        }
 
         targetInventoryContainer.Clear();
         targetInventoryUI = target.GetInventoryUI();
@@ -102,7 +88,6 @@ public class DemoUIManager : MonoBehaviour
 
     public void ShowHotbarOnly()
     {
-        EnsureInitialized();
         ShowElement(playerInventoryContainer, false);
         ShowElement(playerEquipmentContainer, false);
         ShowElement(targetInventoryContainer, false);
@@ -111,7 +96,6 @@ public class DemoUIManager : MonoBehaviour
 
     public void HideAllInventories()
     {
-        EnsureInitialized();
         ShowElement(playerInventoryContainer, false);
         ShowElement(playerEquipmentContainer, false);
         ShowElement(hotbarContainer, false);
@@ -122,7 +106,14 @@ public class DemoUIManager : MonoBehaviour
     {
         if (element != null)
         {
-            element.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            if (show)
+            {
+                element.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                element.style.display = DisplayStyle.None;
+            }
         }
     }
 }

@@ -10,31 +10,18 @@ public class SO_ItemEditor : Editor
     private const float SectionSpacing = 6f;
     private const float InnerPadding = 8f;
     private const float RarityBarHeight = 3f;
+    private const float CatalogEditButtonWidth = 42f;
 
-    // --- Foldout state (persisted per-session via EditorPrefs) ---
-    private static bool _foldIdentity = true;
-    private static bool _foldVisual = true;
-    private static bool _foldGameplay = true;
-    private static bool _foldEquipment = true;
+    private static bool foldIdentity = true;
+    private static bool foldVisual = true;
+    private static bool foldGameplay = true;
+    private static bool foldEquipment = true;
 
-    // --- Cached styles (built once) ---
-    private static GUIStyle _headerNameStyle;
-    private static GUIStyle _headerSubStyle;
-    private static GUIStyle _sectionHeaderStyle;
-    private static GUIStyle _descriptionStyle;
-    private static GUIStyle _centeredMiniLabel;
-    private static bool _stylesBuilt;
-
-    // --- Rarity palette ---
-    private static readonly Color[] RarityColors = new Color[]
-    {
-        new Color(0.66f, 0.66f, 0.66f),  // Common       — grey
-        new Color(0.18f, 0.80f, 0.25f),  // Uncommon     — green
-        new Color(0.24f, 0.55f, 0.95f),  // Rare         — blue
-        new Color(0.70f, 0.30f, 0.90f),  // VeryRare     — purple
-        new Color(1.00f, 0.60f, 0.10f),  // Legendary    — orange
-        new Color(0.95f, 0.85f, 0.15f),  // Unique       — gold
-    };
+    private static GUIStyle headerNameStyle;
+    private static GUIStyle headerSubStyle;
+    private static GUIStyle sectionHeaderStyle;
+    private static GUIStyle centeredMiniLabel;
+    private static bool stylesBuilt;
 
     // ---------------------------------------------------------------
     // Inspector
@@ -44,31 +31,37 @@ public class SO_ItemEditor : Editor
         BuildStyles();
         serializedObject.Update();
 
-        var iconProp    = serializedObject.FindProperty("Icon");
-        var nameProp    = serializedObject.FindProperty("ItemName");
-        var descProp    = serializedObject.FindProperty("Description");
-        var guidProp    = serializedObject.FindProperty("Guid");
-        var stackProp   = serializedObject.FindProperty("StackSize");
-        var typeProp    = serializedObject.FindProperty("ItemType");
-        var rarityProp  = serializedObject.FindProperty("DefaultRarity");
+        var iconProp = serializedObject.FindProperty("icon");
+        var nameProp = serializedObject.FindProperty("itemName");
+        var descProp = serializedObject.FindProperty("description");
+        var guidProp = serializedObject.FindProperty("guid");
+        var stackProp = serializedObject.FindProperty("stackSize");
+        var typeProp = serializedObject.FindProperty("itemType");
+        var catalogProp = serializedObject.FindProperty("rarityCatalog");
+        var rarityProp = serializedObject.FindProperty("defaultRarityName");
+
+        if (string.IsNullOrWhiteSpace(rarityProp.stringValue))
+        {
+            rarityProp.stringValue = ((SO_Item)target).DefaultRarity;
+        }
 
         var icon = iconProp.objectReferenceValue as Texture2D;
-        Color rarityCol = GetRarityColor(rarityProp.enumValueIndex);
+        var catalog = catalogProp.objectReferenceValue as SO_RarityCatalog;
+        Color rarityCol = catalog != null
+            ? catalog.GetColor(rarityProp.stringValue)
+            : RarityDefinition.GetFallbackColor(rarityProp.stringValue);
 
-        // ── Header card ──────────────────────────────────────────
         DrawHeaderCard(icon, nameProp.stringValue, typeProp, rarityProp, rarityCol);
 
         EditorGUILayout.Space(SectionSpacing);
 
-        // ── Identity section ─────────────────────────────────────
-        _foldIdentity = DrawSectionFoldout("Identity", _foldIdentity);
-        if (_foldIdentity)
+        foldIdentity = DrawSectionFoldout("Identity", foldIdentity);
+        if (foldIdentity)
         {
             BeginSection();
             EditorGUILayout.PropertyField(nameProp, new GUIContent("Name"));
             EditorGUILayout.PropertyField(descProp, new GUIContent("Description"));
 
-            // Draw Guid as read-only, copiable
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.PropertyField(guidProp, new GUIContent("GUID"));
             EditorGUI.EndDisabledGroup();
@@ -77,9 +70,8 @@ public class SO_ItemEditor : Editor
 
         EditorGUILayout.Space(SectionSpacing);
 
-        // ── Visual section ───────────────────────────────────────
-        _foldVisual = DrawSectionFoldout("Visual", _foldVisual);
-        if (_foldVisual)
+        foldVisual = DrawSectionFoldout("Visual", foldVisual);
+        if (foldVisual)
         {
             BeginSection();
             EditorGUILayout.PropertyField(iconProp, new GUIContent("Icon"));
@@ -88,24 +80,23 @@ public class SO_ItemEditor : Editor
 
         EditorGUILayout.Space(SectionSpacing);
 
-        // ── Gameplay section ─────────────────────────────────────
-        _foldGameplay = DrawSectionFoldout("Gameplay", _foldGameplay);
-        if (_foldGameplay)
+        foldGameplay = DrawSectionFoldout("Gameplay", foldGameplay);
+        if (foldGameplay)
         {
             BeginSection();
             EditorGUILayout.PropertyField(typeProp, new GUIContent("Type"));
-            EditorGUILayout.PropertyField(rarityProp, new GUIContent("Rarity"));
+            EditorGUILayout.PropertyField(catalogProp, new GUIContent("Rarity Catalog"));
+            DrawRaritySelector(rarityProp, catalog);
             EditorGUILayout.PropertyField(stackProp, new GUIContent("Max Stack"));
             EndSection();
         }
 
-        // ── Equipment section (only for SO_Equipment) ────────────
         var equipProp = serializedObject.FindProperty("EquipmentType");
         if (equipProp != null)
         {
             EditorGUILayout.Space(SectionSpacing);
-            _foldEquipment = DrawSectionFoldout("Equipment", _foldEquipment);
-            if (_foldEquipment)
+            foldEquipment = DrawSectionFoldout("Equipment", foldEquipment);
+            if (foldEquipment)
             {
                 BeginSection();
                 EditorGUILayout.PropertyField(equipProp, new GUIContent("Slot"));
@@ -116,17 +107,12 @@ public class SO_ItemEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 
-    // ---------------------------------------------------------------
-    // Header card
-    // ---------------------------------------------------------------
     private void DrawHeaderCard(Texture2D icon, string itemName, SerializedProperty typeProp, SerializedProperty rarityProp, Color rarityCol)
     {
-        // Outer box
         var headerRect = EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Height(HeaderHeight));
 
         EditorGUILayout.BeginHorizontal();
 
-        // Icon thumbnail
         var iconRect = GUILayoutUtility.GetRect(IconSize, IconSize, GUILayout.Width(IconSize));
         if (icon != null)
         {
@@ -135,22 +121,27 @@ public class SO_ItemEditor : Editor
         else
         {
             EditorGUI.DrawRect(iconRect, new Color(0.15f, 0.15f, 0.15f));
-            GUI.Label(iconRect, "No Icon", _centeredMiniLabel);
+            GUI.Label(iconRect, "No Icon", centeredMiniLabel);
         }
 
         GUILayout.Space(12);
 
-        // Right side: name + subtitle
         EditorGUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
 
-        string displayName = string.IsNullOrWhiteSpace(itemName) ? target.name : itemName;
-        EditorGUILayout.LabelField(displayName, _headerNameStyle);
+        string displayName = itemName;
+
+        if (string.IsNullOrWhiteSpace(displayName))
+        {
+            displayName = target.name;
+        }
+
+        EditorGUILayout.LabelField(displayName, headerNameStyle);
 
         string subtitle = typeProp.enumDisplayNames[typeProp.enumValueIndex]
                           + "  •  "
-                          + rarityProp.enumDisplayNames[rarityProp.enumValueIndex];
-        EditorGUILayout.LabelField(subtitle, _headerSubStyle);
+                          + RarityDefinition.NormalizeName(rarityProp.stringValue);
+            EditorGUILayout.LabelField(subtitle, headerSubStyle);
 
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndVertical();
@@ -159,20 +150,65 @@ public class SO_ItemEditor : Editor
 
         EditorGUILayout.EndVertical();
 
-        // Rarity accent bar along the bottom of the header
         var barRect = new Rect(headerRect.x, headerRect.yMax - RarityBarHeight, headerRect.width, RarityBarHeight);
         EditorGUI.DrawRect(barRect, rarityCol);
     }
 
-    // ---------------------------------------------------------------
-    // Section helpers
-    // ---------------------------------------------------------------
     private static bool DrawSectionFoldout(string title, bool foldout)
     {
         EditorGUILayout.BeginHorizontal();
-        foldout = EditorGUILayout.Foldout(foldout, title, true, _sectionHeaderStyle);
+        foldout = EditorGUILayout.Foldout(foldout, title, true, sectionHeaderStyle);
         EditorGUILayout.EndHorizontal();
         return foldout;
+    }
+
+    private static void DrawRaritySelector(SerializedProperty rarityProp, SO_RarityCatalog catalog)
+    {
+        if (catalog == null)
+        {
+            EditorGUILayout.PropertyField(rarityProp, new GUIContent("Rarity"));
+            return;
+        }
+
+        string[] rarityNames = catalog.GetRarityNames();
+        if (rarityNames.Length == 0)
+        {
+            EditorGUILayout.PropertyField(rarityProp, new GUIContent("Rarity"));
+            return;
+        }
+
+        string normalizedRarity = RarityDefinition.NormalizeName(rarityProp.stringValue);
+        int selectedIndex = System.Array.FindIndex(rarityNames, rarityName => string.Equals(rarityName, normalizedRarity, System.StringComparison.OrdinalIgnoreCase));
+        int customIndex = rarityNames.Length;
+        string[] options = new string[rarityNames.Length + 1];
+
+        System.Array.Copy(rarityNames, options, rarityNames.Length);
+        options[customIndex] = "Custom...";
+
+        EditorGUILayout.BeginHorizontal();
+        int popupIndex = customIndex;
+
+        if (selectedIndex >= 0)
+        {
+            popupIndex = selectedIndex;
+        }
+
+        int nextIndex = EditorGUILayout.Popup("Rarity", popupIndex, options);
+        if (GUILayout.Button("Edit", GUILayout.Width(CatalogEditButtonWidth)))
+        {
+            Selection.activeObject = catalog;
+            EditorGUIUtility.PingObject(catalog);
+        }
+        EditorGUILayout.EndHorizontal();
+
+        if (nextIndex < rarityNames.Length)
+        {
+            rarityProp.stringValue = rarityNames[nextIndex];
+        }
+        else
+        {
+            EditorGUILayout.PropertyField(rarityProp, new GUIContent("Custom Rarity"));
+        }
     }
 
     private static void BeginSection()
@@ -189,54 +225,36 @@ public class SO_ItemEditor : Editor
         EditorGUILayout.EndVertical();
     }
 
-    // ---------------------------------------------------------------
-    // Utility
-    // ---------------------------------------------------------------
-    private static Color GetRarityColor(int index)
-    {
-        if (index >= 0 && index < RarityColors.Length)
-            return RarityColors[index];
-        return Color.white;
-    }
-
-    private static Rect CenterRect(Rect area, float w, float h)
-    {
-        return new Rect(area.x + (area.width - w) * 0.5f,
-                        area.y + (area.height - h) * 0.5f,
-                        w, h);
-    }
-
     private static void BuildStyles()
     {
-        if (_stylesBuilt) return;
-        _stylesBuilt = true;
+        if (stylesBuilt)
+        {
+            return;
+        }
 
-        _headerNameStyle = new GUIStyle(EditorStyles.boldLabel)
+        stylesBuilt = true;
+
+        headerNameStyle = new GUIStyle(EditorStyles.boldLabel)
         {
             fontSize = 16,
             wordWrap = true,
             margin = new RectOffset(0, 0, 0, 2)
         };
 
-        _headerSubStyle = new GUIStyle(EditorStyles.miniLabel)
+        headerSubStyle = new GUIStyle(EditorStyles.miniLabel)
         {
             fontSize = 11,
             fontStyle = FontStyle.Italic,
             normal = { textColor = new Color(0.65f, 0.65f, 0.65f) }
         };
 
-        _sectionHeaderStyle = new GUIStyle(EditorStyles.foldout)
+        sectionHeaderStyle = new GUIStyle(EditorStyles.foldout)
         {
             fontStyle = FontStyle.Bold,
             fontSize = 12
         };
 
-        _descriptionStyle = new GUIStyle(EditorStyles.textArea)
-        {
-            wordWrap = true
-        };
-
-        _centeredMiniLabel = new GUIStyle(EditorStyles.centeredGreyMiniLabel)
+        centeredMiniLabel = new GUIStyle(EditorStyles.centeredGreyMiniLabel)
         {
             alignment = TextAnchor.MiddleCenter
         };
